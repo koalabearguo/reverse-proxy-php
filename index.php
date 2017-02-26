@@ -117,10 +117,12 @@ if($_SERVER['REQUEST_METHOD']=='POST')
 	$opts = array(
 	'http'=>array(
 	'method'=>$_SERVER['REQUEST_METHOD'],
+	'content'=>$postdata,
     'header'=>"Accept-language: zh-CN\r\n" .   //可以使用客户端浏览器的$_SERVER['HTTP_ACCEPT_LANGUAGE']
 			  "user-agent: '$Agent'"."\r\n".
 			  "Cookie: ".arrToStr($_COOKIE)."\r\n".
-			  "content: ".$postdata
+			  "Content-Type: ".$_SERVER['CONTENT_TYPE']
+			  
 		)
 	);
 	
