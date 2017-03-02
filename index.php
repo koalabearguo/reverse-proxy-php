@@ -121,6 +121,7 @@ if($_SERVER['REQUEST_METHOD']=='POST')
     'header'=>"Accept-language: zh-CN\r\n" .   //可以使用客户端浏览器的$_SERVER['HTTP_ACCEPT_LANGUAGE']
 			  "user-agent: '$Agent'"."\r\n".
 			  "Cookie: ".arrToStr($_COOKIE)."\r\n".
+			  "Accept-Encoding: gzip, deflate, sdch\r\n".
 			  "Content-Type: ".$_SERVER['CONTENT_TYPE']
 			  
 		)
@@ -134,6 +135,7 @@ else
 	'method'=>$_SERVER['REQUEST_METHOD'],
     'header'=>"Accept-language: zh-CN\r\n" .
 			  "user-agent: '$Agent'"."\r\n".
+			  "Accept-Encoding: gzip, deflate, sdch\r\n".
 			  "Cookie: ".arrToStr($_COOKIE)
 		)
 	);
@@ -141,37 +143,14 @@ else
 }
 //
 $context = stream_context_create($opts);
-//
-#echo $protocal_host['scheme'];
-#echo "://".$protocal_host['host'];
-#echo $_SERVER["REQUEST_URI"];
-
+//发送请求
 $homepage = file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"],false,$context);
 //处理返回的请求头乘关系型数组，键值对
-//print_r($http_response_header);
-//$response_header=
 parseHeaders($http_response_header);
-//输出头中内容类型
-//header("Content-Type: ".$response_header['Content-Type']);
-//获取cookie
-//$res_cookie=$response_header['Set-Cookie'];
-
-//设置COOkie
-//if(!empty($res_cookie))
-//{
-	//处理COOkie的domain关键字
-	//$res_cookie=preg_replace("/domain=.*?;/","domain=".$root.$top.";",$res_cookie);
-	//处理COOkie的domain关键字，这个domain在cookie的最后不含有分号
-	//$res_cookie=preg_replace("/domain=.*/","domain=".$root.$top,$res_cookie);
-	//header("Set-Cookie: ".$res_cookie);
-//}
 //针对谷歌香港做特殊替换处理
 //$homepage=str_replace("www.google.com.hk",$_SERVER["SERVER_NAME"],$homepage);
 //替换域名并输出网页
 $homepage=str_replace($protocal_host['host'],$_SERVER["SERVER_NAME"],$homepage);
 //输出网页内容
-#header("receive-cookie: ".json_encode($http_response_header));
-#header("client-cookie: ".json_encode($_COOKIE));
-#header("send-cookie: ".arrToStr($_COOKIE));
 echo $homepage;
 ?>
