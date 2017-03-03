@@ -69,6 +69,8 @@ function parseHeaders($headers)
 			{
 				header("Content-Type: ".trim( $t[1] ));
 			}
+			elseif(strcasecmp('Location',trim( $t[0] ))==0)
+				header("Location: ".trim( $t[1] ));
 			else
 				continue;
 		}
@@ -121,7 +123,7 @@ if($_SERVER['REQUEST_METHOD']=='POST')
     'header'=>"Accept-language: zh-CN\r\n" .   //可以使用客户端浏览器的$_SERVER['HTTP_ACCEPT_LANGUAGE']
 			  "user-agent: '$Agent'"."\r\n".
 			  "Cookie: ".arrToStr($_COOKIE)."\r\n".
-			  "Accept-Encoding: gzip, deflate, sdch\r\n".
+			  //"Accept-Encoding: gzip, deflate, sdch\r\n".
 			  "Content-Type: ".$_SERVER['CONTENT_TYPE']
 			  
 		)
@@ -135,7 +137,7 @@ else
 	'method'=>$_SERVER['REQUEST_METHOD'],
     'header'=>"Accept-language: zh-CN\r\n" .
 			  "user-agent: '$Agent'"."\r\n".
-			  "Accept-Encoding: gzip, deflate, sdch\r\n".
+			  //"Accept-Encoding: gzip, deflate, sdch\r\n".
 			  "Cookie: ".arrToStr($_COOKIE)
 		)
 	);
