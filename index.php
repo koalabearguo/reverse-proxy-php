@@ -70,9 +70,10 @@ function parseHeaders($headers)
 				header("Content-Type: ".trim( $t[1] ));
 			}
 			elseif(strcasecmp('Location',trim( $t[0] ))==0)
-			
-				header("Location: ".trim( $t[1] ));
-				
+			{
+				$relocation=str_replace($protocal_host['host'],$_SERVER["SERVER_NAME"],trim( $t[1] ));
+				header("Location: ".$relocation);
+			}
 			elseif(strcasecmp('cache-control',trim( $t[0] ))==0)
 			
 				header("cache-control: ".trim( $t[1] ));
