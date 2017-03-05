@@ -71,6 +71,8 @@ function parseHeaders($headers)
 			}
 			elseif(strcasecmp('Location',trim( $t[0] ))==0)
 				header("Location: ".trim( $t[1] ));
+			elseif(strcasecmp('cache-control',trim( $t[0] ))==0)
+				header("cache-control: ".trim( $t[1] ));
 			else
 				continue;
 		}
