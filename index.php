@@ -46,7 +46,7 @@ function getParams()
    } 
    return $arr; 
 }
-//解析HTTP请求头
+//解析HTTP响应头
 function parseHeaders($headers)
 {
     //$head = array();
@@ -154,7 +154,7 @@ else
 $context = stream_context_create($opts);
 //发送请求
 $homepage = file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"],false,$context);
-//处理返回的请求头乘关系型数组，键值对
+//处理file_get_contents返回的响应求头
 parseHeaders($http_response_header);
 //针对谷歌香港做特殊替换处理
 //$homepage=str_replace("www.google.com.hk",$_SERVER["SERVER_NAME"],$homepage);
