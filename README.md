@@ -20,3 +20,14 @@
 app.yaml文件是用于GAE的，只要把app.yaml和index.php部署到GAE空间就可以了。
 
 index.php中的$target_host可以修改为自己反向代理的网址
+
+## 自己在GAE搭建的php 谷歌反向代理 绑定了自己的域名
+
+GAE php空间：
+
+https://g.koala.tk 
+
+apache php空间：   
+
+https://proxy.koala.tk 
+
