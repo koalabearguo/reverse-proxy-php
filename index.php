@@ -25,7 +25,7 @@ $top=".".$rootdomain[$lenth-1];
 $root=".".$rootdomain[$lenth-2];
 
 //解析url参数
-function getParams() 
+function get_request_params() 
 { 
    $url = $_SERVER["REQUEST_URI"]; 
    
@@ -47,7 +47,7 @@ function getParams()
    return $arr; 
 }
 //解析HTTP响应头
-function parseHeaders($headers)
+function parse_headers($headers)
 {
     //$head = array();
 	global $root,$top;
@@ -91,7 +91,7 @@ function parseHeaders($headers)
     return;// $head;
 }
 //关系数组转换成字符串，每个键值对中间用=连接，以; 分割
-function arrToStr ($array)  
+function array_to_str($array)  
 {  
    $string="";
     if (is_array($array)) 
@@ -129,7 +129,7 @@ if($_SERVER['REQUEST_METHOD']=='POST')
 	'content'=>$postdata,
     'header'=>"Accept-language: zh-CN\r\n" .   //可以使用客户端浏览器的$_SERVER['HTTP_ACCEPT_LANGUAGE']
 			  "user-agent: '$Agent'"."\r\n".
-			  "Cookie: ".arrToStr($_COOKIE)."\r\n".
+			  "Cookie: ".array_to_str($_COOKIE)."\r\n".
 			  //"Accept-Encoding: gzip, deflate, sdch\r\n".
 			  "Content-Type: ".$_SERVER['CONTENT_TYPE']
 			  
@@ -145,7 +145,7 @@ else
     'header'=>"Accept-language: zh-CN\r\n" .
 			  "user-agent: '$Agent'"."\r\n".
 			  //"Accept-Encoding: gzip, deflate, sdch\r\n".
-			  "Cookie: ".arrToStr($_COOKIE)
+			  "Cookie: ".array_to_str($_COOKIE)
 		)
 	);
 	
@@ -155,7 +155,7 @@ $context = stream_context_create($opts);
 //发送请求
 $homepage = file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"],false,$context);
 //处理file_get_contents返回的响应求头
-parseHeaders($http_response_header);
+parse_headers($http_response_header);
 //针对谷歌香港做特殊替换处理
 //$homepage=str_replace("www.google.com.hk",$_SERVER["SERVER_NAME"],$homepage);
 //替换域名并输出网页
