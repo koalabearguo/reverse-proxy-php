@@ -1,17 +1,39 @@
-<?php
-//
+<?php 
+
 $target_host="https://www.google.com/";
-//´¦Àí´úÀíµÄÖ÷»úµÃµ½Ð­ÒéºÍÖ÷»úÃû³Æ
+
+//å¤„ç†ä»£ç†çš„ä¸»æœºå¾—åˆ°åè®®å’Œä¸»æœºåç§°
+
 $protocal_host=parse_url($target_host);
-//ÒÔ.·Ö¸îÓòÃû×Ö·û´®
+
+//ä»¥.åˆ†å‰²åŸŸåå­—ç¬¦ä¸²
 $rootdomain=explode(".",$_SERVER["SERVER_NAME"]);
-//»ñÈ¡Êý×éµÄ³¤¶È
+//èŽ·å–æ•°ç»„çš„é•¿åº¦
 $lenth=count($rootdomain);
-//»ñÈ¡¶¥¼¶ÓòÃû
+//èŽ·å–é¡¶çº§åŸŸå
 $top=".".$rootdomain[$lenth-1];
-//»ñÈ¡Ö÷ÓòÃû
+//èŽ·å–ä¸»åŸŸå
 $root=".".$rootdomain[$lenth-2];
-//¹ØÏµÊý×é×ª»»³É×Ö·û´®£¬Ã¿¸ö¼üÖµ¶ÔÖÐ¼äÓÃ=Á¬½Ó£¬ÒÔ; ·Ö¸î
+
+$aAccess = curl_init() ;
+// --------------------
+
+// set URL and other appropriate options
+
+curl_setopt($aAccess, CURLOPT_URL,$protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"]);
+
+curl_setopt($aAccess, CURLOPT_HEADER, true);
+curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($aAccess, CURLOPT_SSL_VERIFYPEER, false);  
+curl_setopt($aAccess, CURLOPT_SSL_VERIFYHOST, false);  
+curl_setopt($aAccess, CURLOPT_TIMEOUT, 60);
+curl_setopt($aAccess, CURLOPT_BINARYTRANSFER, true);
+
+//if(!empty($_SERVER['HTTP_REFERER']))
+    //curl_setopt($aAccess,CURLOPT_REFERER,$_SERVER['HTTP_REFERER']) ;
+
+//å…³ç³»æ•°ç»„è½¬æ¢æˆå­—ç¬¦ä¸²ï¼Œæ¯ä¸ªé”®å€¼å¯¹ä¸­é—´ç”¨=è¿žæŽ¥ï¼Œä»¥; åˆ†å‰²
 function array_to_str ($array)  
 {  
    $string="";
@@ -31,99 +53,77 @@ function array_to_str ($array)
     return $string;  
 } 
 
-//½âÎö·µ»ØÍ·
-function parse_curl_headers($header_text)
-{
-    $headers = array();
-	global $root,$top;
-    //$header_text = substr($response, 0, strpos($response, "\r\n\r\n"));
-    foreach (explode("\r\n", $header_text) as $i => $line)
-        if ($i === 0)
-            $headers['http_code'] = $line;
-        else
-        {
-            list ($key, $value) = explode(':', $line);
-
-            //$headers[$key] = $value;
-			if(strcasecmp('Set-Cookie',trim($key))==0)
-			{
-				//´¦ÀíCOOkieµÄdomain¹Ø¼ü×Ö
-				$targetcookie=trim( $value ).";";
-				$res_cookie=preg_replace("/domain=.*?;/","domain=".$root.$top.";",$targetcookie);
-				$res_cookie=substr($res_cookie,0,strlen($res_cookie)-1); 
-				header("Set-Cookie: ".$res_cookie);
-			}
-			elseif(strcasecmp('Content-Type',trim($key))==0)
-			{
-				header("Content-Type: ".trim( $value ));
-			}
-			/* elseif(strcasecmp('Location',trim( $key ))==0)
-			{
-				$relocation=str_replace($protocal_host['host'],$_SERVER["SERVER_NAME"],trim( $value ));
-				header("Location: ".$relocation);
-				//continue;
-				//echo $relocation;
-			} */
-			elseif(strcasecmp('cache-control',trim( $key ))==0)
-			
-				header("cache-control: ".trim( $value ));
-				
-			else
-				continue;
-        }
-
-    return $headers;
-}
-//×é×°httpÍ·
+//$headers=get_client_header();
 $headers = array();
-$headers[]="Accept-language: zh-CN";
+$headers[]="Accept-language: zh-CN,zh";//$_SERVER['HTTP_ACCEPT_LANGUAGE'];
 $headers[]="Cookie: ".array_to_str($_COOKIE);
+$headers[]="user-agent: ".$_SERVER['HTTP_USER_AGENT'];
 
-$ch="";
-function curl_file_get_contents($url,$post=false){
-	global $headers,$ch;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HEADER, 1);
-    //postÊý¾Ý
-    if($post==true)
-    {
-		$headers[]="Content-Type: ".$_SERVER['CONTENT_TYPE'];
-        curl_setopt($ch, CURLOPT_POST,1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents("php://input"));
-		//print_r(http_build_query($_POST));
-    }
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-    //curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    $data = curl_exec($ch);
-	
-	// Send the header based on the response from the server
-	//header("Content-type: ".curl_getinfo($ch, CURLINFO_CONTENT_TYPE));
-	//curl_close($ch);
-    return $data;
+
+if( $_SERVER['REQUEST_METHOD']=='POST' )
+{
+	$headers[]="Content-Type: ".$_SERVER['CONTENT_TYPE'];
+	curl_setopt($aAccess, CURLOPT_POST, 1);
+	curl_setopt($aAccess, CURLOPT_POSTFIELDS, http_build_query($_POST));
 }
 
-// create a new curl resource and set options
-if($_SERVER['REQUEST_METHOD']=='POST')
-	$output=curl_file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"],true);
-else
-	$output=curl_file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"],false);
+curl_setopt($aAccess,CURLOPT_HTTPHEADER,$headers) ;
+// grab URL and pass it to the browser
 
-//·ÖÀëÍ·²¿ºÍÄÚÈÝ
-$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-$result_headers = substr($output, 0, $headerSize);
-//print_r($result_headers);
-$results = substr($output, $headerSize);
-//print_r($result_headers);
-parse_curl_headers($result_headers);
-// Send the curl output
-$output=str_replace($protocal_host['host'],$_SERVER["SERVER_NAME"],$results);
-echo $output;
-// close curl resource
-curl_close($ch);
 
-?> 
+
+$sResponse = curl_exec($aAccess);
+list($headerstr,$sResponse)=parse_header($sResponse);
+$headarr= explode("\r\n", $headerstr);
+foreach($headarr as $h){
+	if(strlen($h)>0){
+		if(strpos($h,'Content-Length')!==false) continue;
+		if(strpos($h,'Transfer-Encoding')!==false) continue;
+		if(strpos($h,'Connection')!==false) continue;
+		if(strpos($h,'HTTP/1.1 100 Continue')!==false) continue;
+		if(strpos($h,'Set-Cookie')!==false) 
+		{
+			$targetcookie=$h.";";
+			$res_cookie=preg_replace("/domain=.*?;/","domain=".$root.$top.";",$targetcookie);
+			$h=substr($res_cookie,0,strlen($res_cookie)-1);
+		}
+		header($h);
+	}
+}
+
+function get_client_header(){
+	$headers=array();
+	foreach($_SERVER as $k=>$v){
+		if(strpos($k,'HTTP_')===0){
+			$k=strtolower(preg_replace('/^HTTP/', '', $k));
+			$k=preg_replace_callback('/_\w/','header_callback',$k);
+			$k=preg_replace('/^_/','',$k);
+			$k=str_replace('_','-',$k);
+			if($k=='Host') continue;
+			$headers[]="$k: $v";
+		}
+	}
+	return $headers;
+}
+
+function header_callback($str){
+	return strtoupper($str[0]);
+}
+
+function parse_header($sResponse){
+	list($headerstr,$sResponse)=explode("\r\n\r\n",$sResponse, 2);
+	$ret=array($headerstr,$sResponse);
+	if(preg_match('/^HTTP\/1\.1 \d{3}/', $sResponse)){
+		$ret=parse_header($sResponse);
+	}
+	return $ret;
+}
+
+
+// close cURL resource, and free up system resources
+$sResponse=str_replace($protocal_host['host'],$_SERVER["SERVER_NAME"],$sResponse);
+
+curl_close($aAccess);
+
+echo $sResponse ;
+?>
