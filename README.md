@@ -23,13 +23,9 @@ index.php中的$target_host可以修改为自己反向代理的网址。
 
 index-curl-version.php是使用的curl实现的代理，功能基本一样。
 
-## 自己在GAE搭建的php 谷歌反向代理 绑定了自己的域名
-
-GAE php空间：
-
-https://g.koala.tk 
+## 好久没用了 ,发现google已经不好代理了。。。各种策略限制。。。测试中发现不要告诉谷歌自己的agent就会好很多。。。
 
 apache php空间：   
 
-https://proxy.koala.tk 
+https://koalabear.tk
 
