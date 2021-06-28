@@ -153,7 +153,15 @@ else
 //
 $context = stream_context_create($opts);
 //发送请求
-$homepage = file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"],false,$context);
+$new_request_uri = "";
+$path_script  = pathinfo($_SERVER["PHP_SELF"]);
+//
+if ($path_script[dirname]!="/") {
+	$new_request_uri = substr_replace($_SERVER["REQUEST_URI"],"",strpos($_SERVER["REQUEST_URI"],$path_script[dirname]),strlen($path_script[dirname]));
+} else {
+	$new_request_uri = $_SERVER["REQUEST_URI"];
+}
+$homepage = file_get_contents($protocal_host['scheme']."://".$protocal_host['host'].$new_request_uri,false,$context);
 //处理file_get_contents返回的响应求头
 parse_headers($http_response_header);
 //针对谷歌香港做特殊替换处理

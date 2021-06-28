@@ -19,8 +19,16 @@ $aAccess = curl_init() ;
 // --------------------
 
 // set URL and other appropriate options
+$new_request_uri = "";
+$path_script  = pathinfo($_SERVER["PHP_SELF"]);
+//
+if ($path_script[dirname]!="/") {
+	$new_request_uri = substr_replace($_SERVER["REQUEST_URI"],"",strpos($_SERVER["REQUEST_URI"],$path_script[dirname]),strlen($path_script[dirname]));
+} else {
+	$new_request_uri = $_SERVER["REQUEST_URI"];
+}
 
-curl_setopt($aAccess, CURLOPT_URL,$protocal_host['scheme']."://".$protocal_host['host'].$_SERVER["REQUEST_URI"]);
+curl_setopt($aAccess, CURLOPT_URL,$protocal_host['scheme']."://".$protocal_host['host'].$new_request_uri);
 
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);

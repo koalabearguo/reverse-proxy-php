@@ -23,9 +23,19 @@ index.php中的$target_host可以修改为自己反向代理的网址。
 
 index-curl-version.php是使用的curl实现的代理，功能基本一样。
 
-## 好久没用了 ,发现google已经不好代理了。。。各种策略限制。。。测试中发现不要告诉谷歌自己的agent就会好很多。。。
+# 好久没用了 ,发现google已经不好代理了。。。各种策略限制。。。测试中发现不要告诉谷歌自己的agent就会好很多。。。
 
-apache php空间：   
+# 关于index.php放到二级目录,最新的文件已经支持
+1. 需要修改.htaccess中这一行，比如二级目录是proxy
+```
+RewriteRule . /index.php [L]
+#修改为:
+RewriteRule . /proxy/index.php [L]
+```
+2. nginx空间我没有试过，需要自己研究重定向的问题
+3. GAE空间早就不能用了，未测试
+
+# apache php空间：   
 
 https://koalabear.tk
 
