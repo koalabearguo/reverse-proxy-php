@@ -23,7 +23,7 @@ $new_request_uri = "";
 $path_script  = pathinfo($_SERVER["PHP_SELF"]);
 //
 if ($path_script[dirname]!="/") {
-	$new_request_uri = substr_replace($_SERVER["REQUEST_URI"],"",strpos($_SERVER["REQUEST_URI"],$path_script[dirname]),strlen($path_script[dirname]));
+	$new_request_uri = substr_replace($_SERVER["REQUEST_URI"],"",strpos($_SERVER["REQUEST_URI"],$path_script['dirname']),strlen($path_script['dirname']));
 } else {
 	$new_request_uri = $_SERVER["REQUEST_URI"];
 }
