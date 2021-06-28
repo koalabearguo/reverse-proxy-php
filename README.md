@@ -41,4 +41,7 @@ https://koalabear.tk
 
 # 推荐
 - 这种代理模式只能代理特定的网站，用起来没那么方便，如果你有免费php空间，不妨试下我这个工程:
-https://github.com/koalabearguo/php-proxy,放到国外php空间，可以代理几乎任何网站
+```
+https://github.com/koalabearguo/php-proxy
+```
+- 放到国外php空间，可以代理几乎任何网站
